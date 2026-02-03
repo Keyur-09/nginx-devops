@@ -1,0 +1,61 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_server
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+
+    depends_on:
+      - app1
+      - app2
+      - app3
+      - app4
+    
+    networks:
+      - devops-net
+    restart: unless-stopped
+
+  app1:
+    build: ./apps/app1
+    container_name: app1
+    expose:
+      - "8001"
+    networks:
+      - devops-net
+    restart: unless-stopped
+
+  app2:
+    build: ./apps/app2
+    container_name: app2
+    expose:
+      - "8001"
+    networks:
+      - devops-net
+    restart: unless-stopped
+  
+  app3:
+    build: ./apps/app3
+    container_name: app3
+    expose:
+      - "8001"
+    networks:
+      - devops-net
+    restart: unless-stopped
+
+  app4:
+    build: ./apps/app4
+    container_name: app4
+    expose:
+      - "8001"
+    networks:
+      - devops-net
+    restart: unless-stopped
+
+networks:
+  devops-net:
+    driver: bridge
