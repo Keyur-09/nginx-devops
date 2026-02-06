@@ -48,9 +48,9 @@ jobs:
         run: |
           PORT=9000
           for app in ${{ steps.changes.outputs.apps }}; do
-            docker run -d -p $PORT:8000 --name test-$app test-$app
+            docker run -d -p $PORT:8001 --name test-$app test-$app
 
-            sleep 5
+            sleep 10  
 
             curl -f http://localhost:$PORT/health
             curl -f http://localhost:$PORT/time
