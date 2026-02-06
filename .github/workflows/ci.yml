@@ -9,11 +9,13 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
+
       - name: Detect changed apps
         id: changes
         run: |
@@ -24,6 +26,7 @@ jobs:
             fi
           done
           echo "apps=$APPS" >> $GITHUB_OUTPUT
+
       - name: Enforce VERSION update
         run: |
           for app in ${{ steps.changes.outputs.apps }}; do
@@ -34,22 +37,26 @@ jobs:
               exit 1
             fi
           done
+
       - name: Build Docker images
         run: |
           for app in ${{ steps.changes.outputs.apps }}; do
-            docker build apps/$app
+            docker build -t test-$app apps/$app
           done
+
       - name: Validate endpoints
         run: |
+          PORT=9000
           for app in ${{ steps.changes.outputs.apps }}; do
-            docker build -t test-$app apps/$app
-            docker run -d -p 9000:8001 --name test-$app test-$app
+            docker run -d -p $PORT:8000 --name test-$app test-$app
 
             sleep 5
 
-            curl -f http://localhost:9000/health
-            curl -f http://localhost:9000/time
+            curl -f http://localhost:$PORT/health
+            curl -f http://localhost:$PORT/time
 
             docker stop test-$app
             docker rm test-$app
+
+            PORT=$((PORT+1))
           done

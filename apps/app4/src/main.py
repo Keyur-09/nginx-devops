@@ -3,12 +3,23 @@ from datetime import datetime, timezone
 
 app = FastAPI()
 
+@app.get("/")
+def root():
+    return {
+        "app": "app4",
+        "status": "running"
+    }
+
 @app.get("/health")
 def health():
-    return{"status": "ok","app":"app4"}
+    return {
+        "status": "ok",
+        "app": "app4"
+    }
 
 @app.get("/time")
 def time():
-    return{
-        "time": datetime.now(timezone.utc).isoformat()
+    return {
+        "time": datetime.now(timezone.utc).isoformat(),
+        "app": "app4"
     }

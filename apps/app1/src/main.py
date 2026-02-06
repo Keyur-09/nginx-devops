@@ -12,3 +12,6 @@ def time():
     return{
         "time": datetime.now(timezone.utc).isoformat()
     }
+@app.get("/")
+def root():
+    return {"app": "app1", "status": "running"}
