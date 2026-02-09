@@ -26,19 +26,19 @@ jobs:
       - name: Wait for containers
         run: sleep 10
 
-      - name: Validate routing via NGINX
+      - name: Validate routing via NGINX (HTTPS)
         run: |
-          curl -f -H "Host: app1.localhost" http://localhost/health
-          curl -f -H "Host: app1.localhost" http://localhost/time
+          curl -k -f -H "Host: app1.localhost" https://localhost/health
+          curl -k -f -H "Host: app1.localhost" https://localhost/time
 
-          curl -f -H "Host: app2.localhost" http://localhost/health
-          curl -f -H "Host: app2.localhost" http://localhost/time
+          curl -k -f -H "Host: app2.localhost" https://localhost/health
+          curl -k -f -H "Host: app2.localhost" https://localhost/time
 
-          curl -f -H "Host: app3.localhost" http://localhost/health
-          curl -f -H "Host: app3.localhost" http://localhost/time
+          curl -k -f -H "Host: app3.localhost" https://localhost/health
+          curl -k -f -H "Host: app3.localhost" https://localhost/time
 
-          curl -f -H "Host: app4.localhost" http://localhost/health
-          curl -f -H "Host: app4.localhost" http://localhost/time
+          curl -k -f -H "Host: app4.localhost" https://localhost/health
+          curl -k -f -H "Host: app4.localhost" https://localhost/time
 
       - name: Stop services
         if: always()
