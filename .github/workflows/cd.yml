@@ -26,21 +26,20 @@ jobs:
       - name: Wait for containers
         run: sleep 10
 
-      - name: Validate routing via NGINX (HTTP for CI/CD)
+      - name: Validate routing via NGINX (inside container)
         run: |
-          curl -f -H "Host: app1.localhost" http://localhost/health
-          curl -f -H "Host: app1.localhost" http://localhost/time
+          docker exec nginx_server curl -f -H "Host: app1.localhost" http://localhost/health
+          docker exec nginx_server curl -f -H "Host: app1.localhost" http://localhost/time
 
-          curl -f -H "Host: app2.localhost" http://localhost/health
-          curl -f -H "Host: app2.localhost" http://localhost/time
+          docker exec nginx_server curl -f -H "Host: app2.localhost" http://localhost/health
+          docker exec nginx_server curl -f -H "Host: app2.localhost" http://localhost/time
 
-          curl -f -H "Host: app3.localhost" http://localhost/health
-          curl -f -H "Host: app3.localhost" http://localhost/time
+          docker exec nginx_server curl -f -H "Host: app3.localhost" http://localhost/health
+          docker exec nginx_server curl -f -H "Host: app3.localhost" http://localhost/time
 
-          curl -f -H "Host: app4.localhost" http://localhost/health
-          curl -f -H "Host: app4.localhost" http://localhost/time
+          docker exec nginx_server curl -f -H "Host: app4.localhost" http://localhost/health
+          docker exec nginx_server curl -f -H "Host: app4.localhost" http://localhost/time
 
       - name: Stop services
         if: always()
-        run: |
-          docker compose down
+        run: docker compose down
