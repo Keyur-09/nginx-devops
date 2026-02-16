@@ -11,11 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Code checkout
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
+      # 2️⃣ Detect changed apps
       - name: Detect changed apps
         id: changes
         run: |
@@ -27,6 +29,7 @@ jobs:
           done
           echo "apps=$APPS" >> $GITHUB_OUTPUT
 
+      # 3️⃣ Enforce VERSION file update
       - name: Enforce VERSION update
         run: |
           for app in ${{ steps.changes.outputs.apps }}; do
@@ -38,25 +41,23 @@ jobs:
             fi
           done
 
+      # 4️⃣ Build Docker images
       - name: Build Docker images
         run: |
           for app in ${{ steps.changes.outputs.apps }}; do
             docker build -t test-$app apps/$app
           done
 
+      # 5️⃣ Run containers & test endpoints
       - name: Validate endpoints
         run: |
           PORT=9000
           for app in ${{ steps.changes.outputs.apps }}; do
-            docker run -d -p $PORT:8001 --name test-$app test-$app
-
-            sleep 10  
-
+            docker run -d -p $PORT:8000 --name test-$app test-$app
+            sleep 10
             curl -f http://localhost:$PORT/health
             curl -f http://localhost:$PORT/time
-
             docker stop test-$app
             docker rm test-$app
-
             PORT=$((PORT+1))
           done

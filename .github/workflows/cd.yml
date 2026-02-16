@@ -12,24 +12,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ Docker setup
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
-      - name: Start services with Docker Compose
-        run: |
-          docker compose up -d --build
+      # 3️⃣ Start application stack
+      - name: Deploy with Docker Compose
+        run: docker compose up -d --build
 
-      - name: Wait for containers to stabilize
+      # 4️⃣ Wait for services
+      - name: Wait for services
         run: sleep 15
 
-      - name: Verify containers are running
-        run: |
-          docker ps
-          docker compose ps
+      # 5️⃣ Verify running containers
+      - name: Verify containers
+        run: docker compose ps
 
+      # 6️⃣ Cleanup (optional for test env)
       - name: Stop services
         if: always()
         run: docker compose down
